@@ -2,12 +2,44 @@
 #include <fstream>
 #include <string>
 #include <algorithm>
-
+#include <vector>
+#include <numeric>
 
 using namespace std;
 
-const int arrlen = 6;
+//const int arrlen = 6;
 
+void getinput(vector<int>& numbers)
+{
+	//vector<int> numbers;
+	string line;
+	ifstream myfile("E:/Lehigh/Courses/Program Tech by Femister/hw1/input.txt");
+	if (!myfile.is_open())
+	{
+		cout << "unable to open file" << endl;
+	}
+	while (getline(myfile, line))
+	{
+		numbers.push_back(stoi(line));
+	}
+
+}
+
+void getpairinput(vector<int>& numbers, vector<int>& targetnumbers)
+{
+	string line;
+	ifstream myfile("E:/Lehigh/Courses/Program Tech by Femister/hw1/input.txt");
+	if (!myfile.is_open())
+	{
+		cout << "unable to open file" << endl;
+	}
+	while (getline(myfile, line, ' '))
+	{
+		numbers.push_back(stoi(line));
+	}
+}
+
+/*
 int *getinput() //generate input
 {
 	int *input = new int[arrlen];
@@ -26,6 +58,7 @@ int *getinput() //generate input
 	}
 	return input;
 }
+*/
 
 int sum(int *arr1, int size) // calculate sum
 {
@@ -37,22 +70,22 @@ int sum(int *arr1, int size) // calculate sum
 	return summ;
 }
 
-float deviation(int *arr1, int size, int mean) //calculate deviation
+float deviation(vector<int>& arr1, float mean) //calculate deviation
 {
 	float dev = 0;
-	for (int i = 0; i < size; i++)
+	for (int i = 0; i < arr1.size(); i++)
 	{
 		dev += pow((arr1[i] - mean), 2);
-		cout << dev << endl;
+		//cout << dev << endl;
 	}
-	dev /= size;
+	dev /= arr1.size();
 	dev = sqrt(dev);
 	return dev;
 }
 
 float calculatet(int mean, int popmean, float dev, int size)//calculate t value
 {
-	float t = (mean - popmean) / (dev / sqrt(size - 1));
+	float t = (mean - popmean) / (dev / sqrt(size));
 	return t;
 }
 
@@ -60,28 +93,26 @@ int main()
 {
 	cout << "hello xiaojijiang" << endl;
 
-	int *numbers;
+	vector<int> numbers;
+	vector<int> pairnumbers;
 	int i = 0;
 	int popmean = 10000; //population mean
-	int size = 0; //number of samples
-	int mean; // sample mean
 
-	numbers = getinput();
-	
-	while (i<arrlen)
+	getinput(numbers);	
+	while (i<numbers.size())
 	{
 		cout << numbers[i];
+		cout << ",";
+		cout << pairnumbers[i] << endl;
 		i++;
 	}
 	cout << endl;
 	
-
-	size = arrlen;
-	//int sum = accumulate(numbers.begin(), numbers.end(), 0);
-	int sum1 = sum(numbers, arrlen);
-	mean = sum1 / size;
-	float dev = deviation(numbers, arrlen, mean);
-	float tvalue = calculatet(mean, popmean, dev, size);
+	int sum1 = accumulate(numbers.begin(), numbers.end(), 0);
+	//int sum1 = sum(numbers, arrlen);
+	float mean = sum1 / numbers.size();
+	float dev = deviation(numbers, mean);
+	float tvalue = calculatet(mean, popmean, dev, numbers.size());
 
 	cout << "mean is";
 	cout << mean << endl;
@@ -91,6 +122,6 @@ int main()
 	cout << tvalue << endl;
 
 	system("PAUSE");
-	delete numbers;
+	//delete numbers;
 	return 0;
 }
