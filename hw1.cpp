@@ -99,6 +99,11 @@ int main()
 	if (getinput(numbers))
 	{
 		cout << "For simple single t test" << endl;
+		cout << "The numbers input are" << endl;
+		for (i=0; i < numbers.size(); i++)
+		{
+			cout << numbers[i] << endl;
+		}
 		int popmean = 10000; //population mean
 		int sum1 = accumulate(numbers.begin(), numbers.end(), 0);
 		float mean = sum1 / numbers.size();
@@ -106,7 +111,7 @@ int main()
 		float t1 = calculatet(mean, popmean, dev, numbers.size());
 		//cout << "mean is" << mean << endl;
 		//cout << "dev is" << dev << endl;
-		cout << "t value is" << t1 << endl;
+		cout << "t value is " << t1 << endl;
 	}
 	else
 	{
@@ -119,6 +124,11 @@ int main()
 	if (getpairinput(numbers1, pairnumbers))
 	{
 		cout << "\nFor paired t test" << endl;
+		cout << "The numbers input are" << endl;
+		for (i=0; i < numbers1.size(); i++)
+		{
+			cout << numbers1[i] << ',' << pairnumbers[i] << endl;
+		}
 		vector<int> diff;
 		for (i = 0; i < numbers1.size(); i++)
 		{
@@ -130,7 +140,7 @@ int main()
 		float t2 = calculatepairt(sumd, sumdsq, diff.size());
 		//cout << "sumd is" << endl;
 		//cout << sumd << "," << sumdsq << endl;
-		cout << "t value is" << t2 << endl;
+		cout << "t value is " << t2 << endl;
 	}
 	else
 	{
