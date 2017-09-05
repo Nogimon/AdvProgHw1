@@ -16,7 +16,7 @@ void getinput(vector<int>& numbers)
 	//vector<int> numbers;
 	string line;
 	//ifstream myfile("E:/Lehigh/Courses/Program Tech by Femister/hw1/input.txt");
-	ifstream myfile("/media/zlab-1/Data/Lian/course/AdvProgHw1/input.txt");
+	ifstream myfile("./input.txt");
 	if (!myfile.is_open())
 	{
 		cout << "unable to open file" << endl;
@@ -36,7 +36,7 @@ void getpairinput(vector<int>& numbers, vector<int>& targetnumbers)
 {
 	string line;
 	//ifstream myfile("E:/Lehigh/Courses/Program Tech by Femister/hw1/inputpair.txt");
-	ifstream myfile("/media/zlab-1/Data/Lian/course/AdvProgHw1/pairinput.txt");
+	ifstream myfile("./pairinput.txt");
 	if (!myfile.is_open())
 	{
 		cout << "unable to open file" << endl;
