@@ -85,7 +85,7 @@ int sum(int *arr1, int size) // calculate sum
 float deviation(vector<int>& arr1, float mean) //calculate deviation
 {
 	float dev = 0;
-	for (size_t int i = 0; i < arr1.size(); i++)
+	for (size_t i = 0; i < arr1.size(); i++)
 	{
 		dev += pow((arr1[i] - mean), 2);
 		//cout << dev << endl;
@@ -110,8 +110,8 @@ float calculatepairt(int sumd, int sumdsq, int size)
 
 int sumsquare(vector<int>& diff)
 {
-	int sumdsq = 0, i=0;
-	for (i = 0; i < diff.size(); i++)
+	int sumdsq = 0;
+	for (size_t i = 0; i < diff.size(); i++)
 	{
 		sumdsq += pow(diff[i], 2);
 	}
@@ -121,7 +121,7 @@ int sumsquare(vector<int>& diff)
 int main()
 {
 	vector<int> numbers;
-	int i = 0;
+	size_t i = 0;
 	cout << "For single t test" << endl;
 
 	int popmean = 10000; //population mean
