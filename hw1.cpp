@@ -62,7 +62,15 @@ float deviation(vector<int>& arr1, float mean) //calculate deviation
 
 float calculatet(float mean, int popmean, float dev, int size)//calculate single t value
 {
-	float t = (mean - popmean) / (dev / sqrt(size-1));
+	float t;
+	if (size > 30)
+	{
+		t = (mean - popmean) / (dev / sqrt(size));
+	}
+	else
+	{
+		t = (mean - popmean) / (dev / sqrt(size - 1));
+	}
 	return t;
 }
 
@@ -90,16 +98,13 @@ int main()
 	if (getinput(numbers))
 	{
 		cout << "For simple single t test" << endl;
-
 		int popmean = 10000; //population mean
-
 		while (i < numbers.size())
 		{
 			cout << numbers[i] << endl;
 			i++;
 		}
 		cout << endl;
-
 		int sum1 = accumulate(numbers.begin(), numbers.end(), 0);
 		float mean = sum1 / numbers.size();
 		float dev = deviation(numbers, mean);
@@ -118,22 +123,18 @@ int main()
 	vector<int> numbers1;
 	if (getpairinput(numbers1, pairnumbers))
 	{
-
 		cout << "\nFor paired t test" << endl;
 		for (i = 0; i < numbers1.size(); i++)
 		{
 			cout << numbers1[i] << "," << pairnumbers[i] << endl;
 		}
 		cout << endl;
-
-
 		vector<int> diff;
 		for (i = 0; i < numbers1.size(); i++)
 		{
-			diff.push_back(abs(numbers1[i] - pairnumbers[i]));
+			diff.push_back((numbers1[i] - pairnumbers[i]));
 		}
 		cout << diff.size() << endl;
-		//cout << diff.end() << endl;
 		int sumd = accumulate(diff.begin(), diff.end(), 0);
 		int sumdsq = sumsquare(diff);
 		float t2 = calculatepairt(sumd, sumdsq, diff.size());
