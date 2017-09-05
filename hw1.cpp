@@ -9,17 +9,14 @@
 
 using namespace std;
 
-//const int arrlen = 6;
-
-void getinput(vector<int>& numbers)
+int getinput(vector<int>& numbers)//get input of single sample t test from txt
 {
-	//vector<int> numbers;
 	string line;
-	//ifstream myfile("E:/Lehigh/Courses/Program Tech by Femister/hw1/input.txt");
 	ifstream myfile("./input.txt");
 	if (!myfile.is_open())
 	{
 		cout << "unable to open file" << endl;
+		return 0;
 	}
 	while (getline(myfile, line))
 	{
@@ -27,19 +24,18 @@ void getinput(vector<int>& numbers)
 		int num;
 		ss >> num;
 		numbers.push_back(num);
-		//numbers.push_back(stoi(line));
 	}
-
+	return 1;
 }
 
-void getpairinput(vector<int>& numbers, vector<int>& targetnumbers)
+int getpairinput(vector<int>& numbers, vector<int>& targetnumbers)//get input of pair test from txt
 {
 	string line;
-	//ifstream myfile("E:/Lehigh/Courses/Program Tech by Femister/hw1/inputpair.txt");
 	ifstream myfile("./pairinput.txt");
 	if (!myfile.is_open())
 	{
-		cout << "unable to open file" << endl;
+		cout << "\nunable to open file" << endl;
+		return 0;
 	}
 	while (getline(myfile, line))
 	{
@@ -49,37 +45,7 @@ void getpairinput(vector<int>& numbers, vector<int>& targetnumbers)
 		numbers.push_back((num2));
 		targetnumbers.push_back((num1));
 	}
-}
-
-/*
-int *getinput() //generate input
-{
-	int *input = new int[arrlen];
-	int inputtemp[6] = { 11300,9890,10400,9900,10545,12334 };
-	int i=0;
-	ifstream myfile("E:/Lehigh/Courses/Program Tech by Femister/hw1/input.txt");
-	string temp;
-	if (!myfile.is_open())
-	{
-		cout << "unable to open file" << endl;
-	}
-	while (getline(myfile, temp))
-	{
-		input[i] = stoi(temp);
-		i++;
-	}
-	return input;
-}
-*/
-
-int sum(int *arr1, int size) // calculate sum
-{
-	int summ = 0;
-	for (int i = 0; i < size; i++)
-	{
-		summ += arr1[i];
-	}
-	return summ;
+	return 1;
 }
 
 float deviation(vector<int>& arr1, float mean) //calculate deviation
@@ -88,27 +54,25 @@ float deviation(vector<int>& arr1, float mean) //calculate deviation
 	for (size_t i = 0; i < arr1.size(); i++)
 	{
 		dev += pow((arr1[i] - mean), 2);
-		//cout << dev << endl;
 	}
 	dev /= arr1.size();
 	dev = sqrt(dev);
 	return dev;
 }
 
-float calculatet(float mean, int popmean, float dev, int size)//calculate t value
+float calculatet(float mean, int popmean, float dev, int size)//calculate single t value
 {
-	float t = (mean - popmean) / (dev / sqrt(size));
+	float t = (mean - popmean) / (dev / sqrt(size-1));
 	return t;
 }
 
-float calculatepairt(int sumd, int sumdsq, int size)
+float calculatepairt(int sumd, int sumdsq, int size)//calculate pair t value
 {
-	float t;
-	t = (sumd / size) / sqrt((sumdsq - pow(sumd, 2) / size) / (size * (size - 1)));
+	float t = (sumd / size) / sqrt((sumdsq - pow(sumd, 2) / size) / (size * (size - 1)));
 	return t;
 }
 
-int sumsquare(vector<int>& diff)
+int sumsquare(vector<int>& diff)//summation over square of input array
 {
 	int sumdsq = 0;
 	for (size_t i = 0; i < diff.size(); i++)
@@ -122,53 +86,65 @@ int main()
 {
 	vector<int> numbers;
 	size_t i = 0;
-	cout << "For single t test" << endl;
 
-	int popmean = 10000; //population mean
-	getinput(numbers);
-	while (i<numbers.size())
+	if (getinput(numbers))
 	{
-		cout << numbers[i] << endl;
-		i++;
+		cout << "For simple single t test" << endl;
+
+		int popmean = 10000; //population mean
+
+		while (i < numbers.size())
+		{
+			cout << numbers[i] << endl;
+			i++;
+		}
+		cout << endl;
+
+		int sum1 = accumulate(numbers.begin(), numbers.end(), 0);
+		float mean = sum1 / numbers.size();
+		float dev = deviation(numbers, mean);
+		float t1 = calculatet(mean, popmean, dev, numbers.size());
+
+		cout << "mean is" << mean << endl;
+		cout << "dev is" << dev << endl;
+		cout << "tvalue is" << t1 << endl;
 	}
-	cout << endl;
-
-	int sum1 = accumulate(numbers.begin(), numbers.end(), 0);
-	//int sum1 = sum(numbers, arrlen);
-	float mean = sum1 / numbers.size();
-	float dev = deviation(numbers, mean);
-	float tvalue = calculatet(mean, popmean, dev, numbers.size());
-
-	cout << "mean is" << mean << endl;
-	cout << "dev is" << dev << endl;
-	cout << "tvalue is" << tvalue << endl;
-
-
-	cout << "\nFor paired t test" << endl;
-
+	else
+	{
+		cout << "Simple single t test failed" << endl;
+	}
+	
 	vector<int> pairnumbers;
-	getpairinput(numbers, pairnumbers);
-	while (i<numbers.size())
+	vector<int> numbers1;
+	if (getpairinput(numbers1, pairnumbers))
 	{
-		cout << numbers[i] << "," << pairnumbers[i] << endl;
-		i++;
+
+		cout << "\nFor paired t test" << endl;
+		for (i = 0; i < numbers1.size(); i++)
+		{
+			cout << numbers1[i] << "," << pairnumbers[i] << endl;
+		}
+		cout << endl;
+
+
+		vector<int> diff;
+		for (i = 0; i < numbers1.size(); i++)
+		{
+			diff.push_back(abs(numbers1[i] - pairnumbers[i]));
+		}
+		cout << diff.size() << endl;
+		//cout << diff.end() << endl;
+		int sumd = accumulate(diff.begin(), diff.end(), 0);
+		int sumdsq = sumsquare(diff);
+		float t2 = calculatepairt(sumd, sumdsq, diff.size());
+
+		cout << "sumd is" << endl;
+		cout << sumd << "," << sumdsq << endl;
+		cout << "t value is" << t2 << endl;
 	}
-	cout << endl;
-
-
-	vector<int> diff;
-	for (i = 0; i < numbers.size(); i++)
+	else
 	{
-		diff.push_back(abs(numbers[i] - pairnumbers[i]));
+		cout << "paired t test failed" << endl;
 	}
-	cout << diff.size() << endl;
-	//cout << diff.end() << endl;
-	int sumd = accumulate(diff.begin(), diff.end(), 0);
-	int sumdsq = sumsquare(diff);
-	float t = calculatepairt(sumd, sumdsq, diff.size());
-
-	cout << "sumd is" << endl;
-	cout << sumd << "," << sumdsq << endl;
-	cout << "t value is" << t << endl;
 	return 0;
 }
