@@ -1,9 +1,8 @@
 //For runing the program
 To run the program, simply make the Makefile and run the hw1.out file:
 
-make -f Makefile
-(run 'chmod +x hw1.out' if without permisson )
-./hw1.out
+$ make
+$ ./hw1
 
 (I have tried it successfully on Linux and on Sunlab, but I am not sure if it works on Mac)
 
@@ -16,4 +15,5 @@ And if only one of the t tests is needed, just delete the other file and the pro
 
 //For output
 t value is calculated through the program. 
-Yet since the size of the data is changeble, so the P value of the result can change with the size. So I didn't attach the full chart into it so no P value or judgement will be generated through the program.
+Yet since the size of the data is changeble, so the P value of the result can change with the size. Therefore I didn't attach the full chart into it, so no P value or judgement will be generated through the program.
+(Based on the 6 numbers given in Hw6.pdf, the result is 1.89 for single t test and 1.29 for paired t test, and both cases are not significant.)
