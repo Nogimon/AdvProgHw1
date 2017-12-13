@@ -27,7 +27,7 @@ object Hw4{
         print(list11)
         */
 
-        var stats = List[(Any)]()
+        var stats = List[(String, String, Any)]()
 
         for (list1 <- list)
         {
@@ -37,14 +37,19 @@ object Hw4{
             //println(stats)
         }
         println("stats")
-        println(stats)
+        //println(stats)
         //stats.foreach(println)
 
 
         for (stat <- stats)
         {
-            
+            println(stat._2)
+            //stat._2.groupBy((word:String) => word).mapValues(_.length)
+            val wordCount = stat._2.groupBy(w => w).mapValues(_.size)
+            println(wordCount)
         }
+
+
     }
 
 }
