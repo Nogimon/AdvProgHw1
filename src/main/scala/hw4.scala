@@ -5,78 +5,102 @@ object Hw4{
 
     def main(args: Array[String]): Unit = {
 
-        println("hello")
+        println("CSE 411: Homework4")
+        println("Lian Duan\nemail: lid315@lehigh.edu\nInstructor: Prof.Femister\n")
         val list = Source.fromFile("top40.sql").getLines().toList
-
-        println(list.head)
-        val splitstring = list.head.split("\'")
-        splitstring.foreach(println)
-        //println(splitstring(9))
-        val tuple1 = (splitstring(1), splitstring(3), splitstring(4)(2))
-        println(tuple1)
-
-        
-        /*
-        val list1 = List(("a", "b", 2),2,3)
-        val list2 = List(3,("b",4))
-        val list3 = list1 ::: list2
-        println(list3)
-
-        var list11 = List(("a","b"),3)
-        list11 = list11 ::: List(("a","b","c"),4)
-        print(list11)
-        */
 
         var stats = List[(String, String, Any)]()
 
-        var wordcount = Map("the" -> 2)
+        var wordCount = Map.empty[String, Int]
+
+        var artistCount = Map.empty[String, Int]
+
+        var artistTopCount = Map.empty[String, Int]
+
+        //count the times a title contains certain word
+        var pCount = 0
+        
+        //count the times a title contains certain word and the song is a Top 1 song
+        var pOneCount = 0
+        
+        //count the times a title is a Top 1 song
+        var oneCount = 0
 
         for (list1 <- list)
         {
-            //split every line of the list by ', and then pick up the three needed elements
-            val splitstring = list1.split("\'")
-            stats = stats ::: List((splitstring(1), splitstring(3), splitstring(4)(2)))
-            //println(stats)
+            //split everyline and write into a List with triples
+            val splitString = list1.split("\'")
+            stats = stats ::: List((splitString(1), splitString(3), splitString(4)(2)))
 
-            val wordcount1 = splitstring(3).split("\\W+").foldLeft(Map.empty[String, Int]){
+            
+            val splits = splitString(3).split("\\W+")
+            //Count the times the songs contain a certain word
+            if (splits.contains("ME")){
+                pCount += 1
+                if (splitString(4)(2) == "1"(0)){
+                    pOneCount += 1
+                }
+            }
+            //Count the words in the title of the songs
+            val wordCount1 = splits.foldLeft(Map.empty[String, Int]){
                 (count, word) => count + (word -> (count.getOrElse(word, 0) + 1))
             }
             
-            wordcount = wordcount ++ wordcount1.map{case(name, count) => name->(count + wordcount.getOrElse(name,0))}
-
-            /*
-            val merge = wordcount.toSeq ++ wordcount1.toSeq
-            val grouped = merge.groupBy(_._1)
-            wordcount = grouped.mapValues(_.map(_._2).toList)
-            */
-            
+            wordCount = wordCount ++ wordCount1.map{
+                case(name, count) => name -> (count + wordCount.getOrElse(name,0))
+            }
 
 
+            //Count the names of the artist that are in Top40
+            val artistCount1 = Array(splitString(1)).foldLeft(Map.empty[String, Int]){
+                (count, word) => count + (word -> (count.getOrElse(word, 0) + 1))
+            }
+
+            artistCount = artistCount ++ artistCount1.map{
+                case(name, count) => name -> (count + artistCount.getOrElse(name, 0))
+            }
+
+            //Count the names of the artist that are only top 1
+            if(splitString(4)(2) == "1"(0)){
+                val artistTopCount1 = Array(splitString(1)).foldLeft(Map.empty[String, Int]){
+                    (count, word) => count + (word -> (count.getOrElse(word, 0) + 1))
+                }
+
+                artistTopCount = artistTopCount ++ artistTopCount1.map{
+                    case(name, count) => name -> (count + artistTopCount.getOrElse(name, 0))
+                }
+
+                oneCount += 1
+            }         
         }
-        println("stats")
 
-        val wordcountsort = wordcount.toSeq.sortBy(_._2)
-
-        println(wordcountsort)
-        
+        //The triples are saved in the List called "stats"
+        //uncomment next line to print the stats out
         //println(stats)
-        //stats.foreach(println)
-        
-        /*
-        for (stat <- stats)
-        {
-            println(stat._2)
-            //stat._2.groupBy((word:String) => word).mapValues(_.length)
-            //val wordcount = stat._2.groupBy(w => w.split(" ")).mapValues(_.size)
-            
-            val wordcount = stat._2.foldLeft(Map.empty[String, Int]){
-                (count, word) => count + (word -> (count.getOrElse(word, 0) + 1))
-            }
-            
-            println(wordcount)
-        }
-        */
 
+        //Delete the trivial words in wordCount
+        wordCount -= ("THE", "TO", "A", "AND", "", "IN", "OF", "ON", "S", "LL", "T")
+
+        //Sort the counting result
+        val wordCountSort = wordCount.toSeq.sortWith(_._2 > _._2).slice(0, 5)
+        val artistCountSort = artistCount.toSeq.sortWith(_._2 > _._2).slice(0, 5)
+        val artistTopCountSort = artistTopCount.toSeq.sortWith(_._2 > _._2).slice(0, 5)
+
+
+        //Print out the results
+        println("The most frequent non trivial words:")
+        println(wordCountSort)
+        println("The artists with most top 40 songs:")
+        println(artistCountSort)
+        println("The artists with most top 1 songs:")
+        println(artistTopCountSort)
+        
+        println("\nP(a song being number one | the title contains \"ME\")")
+        println((pOneCount:Float)/pCount)
+        println("P(the title contains \"ME\" | a song being number one)")
+        println((pOneCount:Float)/oneCount)
+        println("In addition, the times that a title: (contains \"ME\", contains \"ME\" and won number one, won number one) is")
+        println(pCount, pOneCount, oneCount)
 
     }
 
